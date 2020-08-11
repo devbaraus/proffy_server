@@ -1,11 +1,12 @@
-import db from "../database/connection";
-import convertHourToMinutes from "../utils/convertHourToMinutes";
-import {Request, Response} from "express";
+import db from '../database/connection'
+import convertHourToMinutes from '../utils/convertHourToMinutes'
+import { Request, Response } from 'express'
+import { createUser } from '../models/UsersModel'
 
 interface ScheduleItem {
-    week_day: number;
-    from: string;
-    to: string;
+    week_day: number
+    from: string
+    to: string
 }
 
 export default class ClassesController {
@@ -17,20 +18,21 @@ export default class ClassesController {
         const time = filters.time as string
 
         if (!filters.week_day || !filters.subject || !filters.time) {
-
             const classes = await db('classes')
                 .join('users', 'classes.user_id', '=', 'users.id')
                 .select(['classes.*', 'users.*'])
             return response.json(classes)
-
         }
         const timeInMinutes = convertHourToMinutes(time as string)
 
         const classes = await db('classes')
             .whereExists(function () {
-                this.select('class_schedule.*').from('class_schedule')
+                this.select('class_schedule.*')
+                    .from('class_schedule')
                     .whereRaw('`class_schedule`.`class_id` = `classes`.`id`')
-                    .whereRaw('`class_schedule`.`week_day` = ??', [Number(week_day)])
+                    .whereRaw('`class_schedule`.`week_day` = ??', [
+                        Number(week_day),
+                    ])
                     .whereRaw('`class_schedule`.`to` > ??', [timeInMinutes])
                     .whereRaw('`class_schedule`.`from` <= ??', [timeInMinutes])
             })
@@ -43,20 +45,36 @@ export default class ClassesController {
 
     async create(request: Request, response: Response) {
         const {
-            name, avatar, whatsapp, bio, subject, cost, schedule
+            name,
+            avatar,
+            whatsapp,
+            bio,
+            email,
+            subject,
+            cost,
+            schedule,
         } = request.body
 
         const trx = await db.transaction()
 
         try {
-            const insertedUserIDs = await trx('users').insert({
-                name, avatar, whatsapp, bio
-            })
+            const insertedUserIDs = await createUser(
+                {
+                    name,
+                    avatar,
+                    whatsapp,
+                    bio,
+                    email,
+                },
+                trx,
+            )
 
             const user_id = insertedUserIDs[0]
 
             const insertedClassesIDs = await trx('classes').insert({
-                subject, cost, user_id
+                subject,
+                cost,
+                user_id,
             })
 
             const class_id = insertedClassesIDs[0]
@@ -78,7 +96,7 @@ export default class ClassesController {
         } catch (e) {
             await trx.rollback()
             return response.status(400).json({
-                error: 'Unexpected error while creating new class'
+                error: 'Unexpected error while creating new class',
             })
         }
     }
