@@ -4,12 +4,6 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
-    "@types/bcrypt": "^3.0.0",
-    "@types/cors": "^2.8.7",
-    "@types/express": "^4.17.7",
-    "@types/jsonwebtoken": "^8.5.0",
-    "@types/morgan": "^1.9.1",
-    "@types/multer": "^1.4.3",
     "ts-node-dev": "^1.0.0-pre.56"
   },
   "scripts": {
@@ -19,7 +13,13 @@
     "knex:migrate:rollback": "knex --knexfile knexfile.ts migrate:rollback"
   },
   "dependencies": {
-    "typescript": "^3.9.7",
+    "@types/bcrypt": "^3.0.0",
+    "@types/cors": "^2.8.7",
+    "@types/express": "^4.17.7",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/morgan": "^1.9.1",
+    "@types/multer": "^1.4.3",
+    "@types/node": "^14.0.27",
     "bcrypt": "^5.0.0",
     "cloudinary": "^1.22.0",
     "cors": "^2.8.5",
@@ -30,6 +30,7 @@
     "multer": "^1.4.2",
     "multer-storage-cloudinary": "^4.0.0",
     "sqlite3": "^5.0.0",
-    "ts-node": "^8.10.2"
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
   }
 }
