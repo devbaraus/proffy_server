@@ -24,7 +24,7 @@ Logo aprendi Python pelo canal eXcript e no outro ano entrei na curso de BCC.
 
 Já desenvolvi alguns projetos para o curso mesmo usando Python, NodeJS, PHP e VueJS.
 Meu portfólio é baraus.dev lá é possível encontrar alguns dos trabalhos que fiz (planejo reformular todo o site ainda) e também tenho um projeto que fiz usando a API do Spotify spotimy.tk.`,
-      password: await encryptPassword('TROLLaudi40)'),
+      password: await encryptPassword('Admin1234)'),
     },
     {
       id: 2,
