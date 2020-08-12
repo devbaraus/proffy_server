@@ -3,13 +3,13 @@ import knex from 'knex'
 export async function up(knex: knex) {
   return knex.schema.createTable('users', (table) => {
     table.increments('id').primary()
-    table.string('name').notNullable()
-    table.string('surname').notNullable()
-    table.string('whatsapp').nullable()
-    table.text('bio').nullable()
-    table.string('email').notNullable().unique()
-    table.string('password').notNullable()
-    table.string('avatar').nullable()
+    table.string('name', 24).notNullable()
+    table.string('surname', 56).notNullable()
+    table.string('whatsapp', 15).nullable()
+    table.string('bio', 1000).nullable()
+    table.string('email', 255).notNullable().unique()
+    table.string('password', 255).notNullable()
+    table.string('avatar', 255).nullable()
     table.timestamp('created_at').defaultTo(knex.raw('now()')).notNullable()
   })
 }
