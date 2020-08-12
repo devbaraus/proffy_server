@@ -9,7 +9,10 @@ export default class AvatarsController {
     const { path } = request.file
     try {
       const { avatar } = (await indexUser(userId))[0]
-      if (avatar !== 'https://api.adorable.io/avatars/285/abott@adorable.png') {
+      if (
+        !String(avatar).includes('https://api.adorable.io/avatars/') &&
+        avatar !== null
+      ) {
         const destroyPath = avatar.split('/').splice(7, 2)
         await destroy(
           `${destroyPath[0]}/${destroyPath[1].replace(/\.[a-zA-Z0-9]+$/g, '')}`,
@@ -17,6 +20,9 @@ export default class AvatarsController {
       }
       await updateUser({ id: userId, avatar: path })
       return response.json({ avatar: path })
-    } catch (e) {}
+    } catch (e) {
+      console.log(e)
+      return response.sendStatus(400)
+    }
   }
 }

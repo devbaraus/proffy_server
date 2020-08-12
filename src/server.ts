@@ -13,5 +13,5 @@ app.use(morgan('dev'))
 app.use('/v1/', routes)
 
 app.listen(process.env.PORT, () => {
-    console.log('Server running at', process.env.PORT)
+  console.log('Server running at', process.env.PORT)
 })
