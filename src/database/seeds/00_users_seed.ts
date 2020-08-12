@@ -27,6 +27,17 @@ Meu portfólio é baraus.dev lá é possível encontrar alguns dos trabalhos que
       password: await encryptPassword('Admin1234)'),
     },
     {
+      id: 3,
+      name: 'Demo',
+      surname: 'Demonstração',
+      whatsapp: '+5562991206888',
+      email: 'demo@gmail.com',
+      avatar: 'https://api.adorable.io/avatars/285/demo@proffy.png',
+      bio: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vel venenatis risus. Etiam scelerisque, odio pretium tincidunt vestibulum, nisl massa luctus lacus, sed efficitur sem quam a lorem. Vivamus sed sodales metus, quis euismod ante. Pellentesque eu feugiat turpis, et volutpat velit. Donec dictum urna ac lacinia consequat. Morbi non quam lorem. Duis a euismod elit. Mauris sed dapibus augue. Duis arcu erat, dictum eu tortor sed, rhoncus scelerisque lectus. Ut consequat molestie auctor. Mauris sit amet velit at enim molestie luctus nec eu massa. Fusce tincidunt nisi non tincidunt dapibus. Duis nulla arcu, dignissim sit amet elit at, tempor interdum massa. Vestibulum est massa, interdum sit amet tortor non, consectetur tempus leo.`,
+      password: await encryptPassword('Demo1234demo'),
+    },
+
+    {
       id: 2,
       name: 'Diego',
       surname: 'Schell Fernandes',

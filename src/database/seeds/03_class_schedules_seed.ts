@@ -49,5 +49,23 @@ export async function seed(knex: Knex): Promise<void> {
         class_id: 3,
       }
     }),
+    ...[1, 2, 3, 4, 5].map((item) => {
+      const [from, to] = [getRandomTime(), getRandomTime()]
+      return {
+        week_day: item,
+        from: from > to ? to : from,
+        to: to > from ? to : from,
+        class_id: 4,
+      }
+    }),
+    ...[1, 3, 4, 5, 0].map((item) => {
+      const [from, to] = [getRandomTime(), getRandomTime()]
+      return {
+        week_day: item,
+        from: from > to ? to : from,
+        to: to > from ? to : from,
+        class_id: 5,
+      }
+    }),
   ])
 }
