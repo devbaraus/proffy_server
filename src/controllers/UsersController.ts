@@ -149,6 +149,7 @@ export default class UsersController {
 
       return response.json({
         token: generateToken({ id }),
+        refresh_token: generateToken({ email, password: hashedPassword }),
         user: {
           id,
           email,
