@@ -235,13 +235,14 @@ export default class UsersController {
           // template: 'reset-password', // html body
           // context: { token }, // html body
         })
+        .then(() =>  response.json())
         .catch((e) => {
           console.log(e)
           response.status(400).json({
             error: 'Erro não pedir redefinição de senha, tente novamente!',
           })
         })
-      response.json()
+      
     } catch (e) {
       console.log(e)
       response.status(400).json({
