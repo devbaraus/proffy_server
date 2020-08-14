@@ -23,25 +23,44 @@ import { getSchedulesfromClasses } from './ClassesController'
 
 function generateToken(params: any) {
   return jwt.sign(params, String(process.env.SECRET), {
-    expiresIn: 60 * 60 * 24,
+    expiresIn: 60 * 60,
   })
+}
+
+function decodeToken(params: string): { email: string; password: string } {
+  return jwt.decode(params) as { email: string; password: string }
 }
 
 export default class UsersController {
   async authenticate(request: Request, response: Response) {
-    const { email, password } = request.body
+    let { email, password, refresh_token } = request.body
     try {
-      const storedUser = (await indexUserByEmail(email))[0] as UserInterface
+      let storedUser
+
+      if (!!refresh_token) {
+        const tokenUser = decodeToken(refresh_token)
+
+        email = tokenUser.email
+        password = tokenUser.password
+
+        storedUser = (
+          await indexUserByEmail(tokenUser.email)
+        )[0] as UserInterface
+      } else {
+        storedUser = (await indexUserByEmail(email))[0] as UserInterface
+      }
+
       if (!storedUser) {
-        return response.status(400).json({ error: 'Não existe esse usuário.' })
+        return response.status(404).json({ error: 'Não existe esse usuário.' })
       }
       if (!(await comparePassword(password, storedUser.password as string))) {
-        return response.status(400).json({ error: 'Senha inválida.' })
+        return response.status(403).json({ error: 'Senha inválida.' })
       }
 
       const { name, surname, id, avatar } = storedUser
       response.json({
         token: generateToken({ id }),
+        refresh_token: generateToken({ email, password }),
         user: {
           avatar,
           name,
