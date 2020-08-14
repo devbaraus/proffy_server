@@ -76,7 +76,7 @@ export default class UsersController {
           .join('subjects', 'classes.subject_id', 'subjects.id')
           .where('user_id', userId)
           .orderBy('classes.created_at', 'desc')
-        storedClasses = await getSchedulesfromClasses(storedClasses)
+        storedClasses = await getSchedulesfromClasses(storedClasses, false)
       }
 
       return response.json({

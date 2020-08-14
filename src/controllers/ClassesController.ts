@@ -14,7 +14,7 @@ interface ScheduleItem {
   to: string
 }
 
-export async function getSchedulesfromClasses(classes: any, teacher?: boolean) {
+export async function getSchedulesfromClasses(classes: any, teacher = true) {
   for (let classItem in classes) {
     const {
       user_id,
