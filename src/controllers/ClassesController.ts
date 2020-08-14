@@ -63,6 +63,7 @@ export async function getSchedulesfromClasses(classes: any, teacher = true) {
 export default class ClassesController {
   async index(request: Request, response: Response) {
     const filters = request.query
+    // @ts-ignore
     const user_id = request.user_id
 
     const subject_id = filters.subject_id as string
