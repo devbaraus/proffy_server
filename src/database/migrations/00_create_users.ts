@@ -9,7 +9,9 @@ export async function up(knex: knex) {
     table.string('bio', 1000).nullable()
     table.string('email', 255).notNullable().unique()
     table.string('password', 255).notNullable()
-    table.string('avatar', 255).nullable()
+    table.string('avatar', 255).notNullable()
+    table.string('passwordToken', 255).nullable()
+    table.timestamp('passwordTokenExpires').nullable()
     table.timestamp('created_at').defaultTo(knex.raw('now()')).notNullable()
   })
 }

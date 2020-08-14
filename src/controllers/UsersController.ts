@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
+import crypto from 'crypto'
 import {
   indexUser,
   createUser,
@@ -16,6 +17,9 @@ import {
   phoneValidator,
 } from '../utils/validators'
 import ProffyError from '../prototypes/ProffyError'
+import db from '../database/connection'
+import mailer, { templateResetPassword } from '../services/mailer'
+import { getSchedulesfromClasses } from './ClassesController'
 
 function generateToken(params: any) {
   return jwt.sign(params, String(process.env.SECRET), {
@@ -55,12 +59,26 @@ export default class UsersController {
   }
 
   async index(request: Request, response: Response) {
+    const { classes } = request.query
     // @ts-ignore
     const userId = request.user_id
     try {
       const { id, surname, avatar, bio, name, email, whatsapp } = (
         await indexUser(userId)
       )[0] as UserInterface
+
+      let storedClasses
+
+      if (!!classes) {
+        storedClasses = await db('classes')
+          .select(['classes.id', 'subject_id', 'cost', 'summary'])
+          .join('users', 'classes.user_id', 'users.id')
+          .join('subjects', 'classes.subject_id', 'subjects.id')
+          .where('user_id', userId)
+          .orderBy('classes.created_at', 'desc')
+        storedClasses = await getSchedulesfromClasses(storedClasses)
+      }
+
       return response.json({
         user: {
           id,
@@ -71,8 +89,10 @@ export default class UsersController {
           whatsapp,
           avatar,
         },
+        classes: storedClasses,
       })
     } catch (e) {
+      console.log(e)
       return response.status(401).json({
         error: 'Usuário não existente.',
       })
@@ -81,36 +101,27 @@ export default class UsersController {
 
   async create(request: Request, response: Response) {
     try {
-      const {
-        name,
-        avatar,
-        bio,
-        whatsapp,
-        email,
-        password,
-        surname,
-      } = request.body
+      const { name, email, password, surname } = request.body
 
       if (!emailValidator(email)) throw new ProffyError('E-mail inválido.')
 
       if (!passwordValidator(password))
         throw new ProffyError('Senha não atende aos requisitos básicos.')
-      if (whatsapp && !phoneValidator(whatsapp))
-        throw new ProffyError('Número de WhatsApp inválido.')
 
       if ((await indexUserByEmail(email))[0] as UserInterface)
         return response
           .status(400)
           .json({ error: 'Este email já está sendo usado.' })
 
+      const avatar = `https://api.adorable.io/avatars/285/${name
+        .toString()
+        .toLowerCase()}@proffy.png`
+
       const hashedPassword = await encryptPassword(password)
       const storedUser = await createUser({
         name,
         surname,
-        avatar:
-          avatar || `https://api.adorable.io/avatars/285/${name}@proffy.png`,
-        bio,
-        whatsapp,
+        avatar,
         email,
         password: hashedPassword,
       })
@@ -162,6 +173,90 @@ export default class UsersController {
           e instanceof ProffyError
             ? e.message
             : 'Não foi possível realizar esta operação.',
+      })
+    }
+  }
+
+  async forgotPassword(request: Request, response: Response) {
+    const { email } = request.body
+    try {
+      const user = (await indexUserByEmail(email))[0]
+
+      if (!user)
+        response.status(400).json({
+          error: 'Usuário não encontrado',
+        })
+
+      const token = crypto.randomBytes(20).toString('hex')
+
+      const now = new Date()
+      now.setHours(now.getHours() + 1)
+
+      await db('users')
+        .update({
+          passwordToken: token,
+          passwordTokenExpires: now,
+        })
+        .where('email', email)
+
+      mailer
+        .sendMail({
+          to: email,
+          from: '"PROFFY" <contato@baraus.dev>',
+          subject: 'Redefinição de senha',
+          // @ts-ignore
+          html: templateResetPassword(token),
+          // template: 'reset-password', // html body
+          // context: { token }, // html body
+        })
+        .catch((e) => {
+          console.log(e)
+          response.status(400).json({
+            error: 'Erro não pedir redefinição de senha, tente novamente!',
+          })
+        })
+      response.json()
+    } catch (e) {
+      console.log(e)
+      response.status(400).json({
+        error: 'Erro não pedir redefinição de senha, tente novamente!',
+      })
+    }
+  }
+
+  async resetPassword(request: Request, response: Response) {
+    const { email, token, password } = request.body
+    try {
+      const user = (await indexUserByEmail(email))[0]
+
+      if (!user)
+        response.status(400).json({
+          error: 'Usuário não encontrado',
+        })
+
+      if (new Date() > user.passwordTokenExpires && user.passwordToken != token)
+        response.status(400).json({
+          error: 'Token inválido',
+        })
+
+      if (!passwordValidator(password))
+        response.status(400).json({
+          error: 'Senha não atende aos quesitos básicos.',
+        })
+
+      await db('users')
+        .update({
+          password: await encryptPassword(password),
+          passwordToken: null,
+          passwordTokenExpires: null,
+        })
+        .where('email', email)
+
+      response.json()
+    } catch (e) {
+      console.log(e)
+      response.status(400).json({
+        error: 'Erro não pedir redefinição de senha, tente novamente!',
       })
     }
   }

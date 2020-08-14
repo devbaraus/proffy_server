@@ -22,6 +22,10 @@ routes.post('/authenticate', usersController.authenticate)
 
 routes.post('/register', usersController.create)
 
+routes.post('/forgot-password', usersController.forgotPassword)
+
+routes.post('/reset-password', usersController.resetPassword)
+
 routes.post(
   '/avatar',
   authenticationMiddleware,

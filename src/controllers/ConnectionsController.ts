@@ -11,10 +11,13 @@ export default class ConnectionsController {
   }
 
   async create(request: Request, response: Response) {
-    const { user_id } = request.body
+    const { class_id } = request.body
+    // @ts-ignore
+    const user_id = request.user_id
 
     await db('connections').insert({
       user_id,
+      class_id,
     })
 
     return response.status(201).send()

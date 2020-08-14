@@ -14,7 +14,7 @@ interface ScheduleItem {
   to: string
 }
 
-async function getSchedulesfromClasses(classes: any) {
+export async function getSchedulesfromClasses(classes: any, teacher?: boolean) {
   for (let classItem in classes) {
     const {
       user_id,
@@ -39,12 +39,14 @@ async function getSchedulesfromClasses(classes: any) {
       cost,
       subject_id,
       summary,
-      teacher: {
-        id: user_id,
-        name: name,
-        whatsapp: whatsapp,
-        avatar: avatar,
-      },
+      teacher: teacher
+        ? {
+            id: user_id,
+            name: name,
+            whatsapp: whatsapp,
+            avatar: avatar,
+          }
+        : null,
       schedules: schedules.map(({ id, week_day, from, to }) => {
         return {
           id,
