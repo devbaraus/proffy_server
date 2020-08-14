@@ -63,6 +63,7 @@ export async function getSchedulesfromClasses(classes: any, teacher = true) {
 export default class ClassesController {
   async index(request: Request, response: Response) {
     const filters = request.query
+    const user_id = request.user_id
 
     const subject_id = filters.subject_id as string
     const week_day = filters.week_day as string
@@ -86,8 +87,11 @@ export default class ClassesController {
           .join('users', 'classes.user_id', 'users.id')
           .join('subjects', 'classes.subject_id', 'subjects.id')
           .where('classes.id', id)
+          .where('classes.user_id', user_id)
           .orderBy('classes.created_at', 'desc')
-
+        if (classes.length < 1) {
+          return response.status(404).json()
+        }
         classes = (await getSchedulesfromClasses(classes))[0]
 
         return response.json(classes)
