@@ -36,31 +36,37 @@ export default class UsersController {
     let { email, password, refresh_token } = request.body
     try {
       let storedUser
+      let hashPassword
 
       if (!!refresh_token) {
+        // @ts-ignore
         const tokenUser = decodeToken(refresh_token)
-
         email = tokenUser.email
-        password = tokenUser.password
+        hashPassword = tokenUser.password
 
         storedUser = (
           await indexUserByEmail(tokenUser.email)
         )[0] as UserInterface
+
+        if (hashPassword !== storedUser.password) {
+          return response.status(403).json({ error: 'Senha inválida.' })
+        }
       } else {
         storedUser = (await indexUserByEmail(email))[0] as UserInterface
+
+        if (!(await comparePassword(password, storedUser.password as string))) {
+          return response.status(403).json({ error: 'Senha inválida.' })
+        }
       }
 
       if (!storedUser) {
         return response.status(404).json({ error: 'Não existe esse usuário.' })
       }
-      if (!(await comparePassword(password, storedUser.password as string))) {
-        return response.status(403).json({ error: 'Senha inválida.' })
-      }
 
       const { name, surname, id, avatar } = storedUser
       response.json({
         token: generateToken({ id }),
-        refresh_token: generateToken({ email, password }),
+        refresh_token: generateToken({ email, password: storedUser.password }),
         user: {
           avatar,
           name,
