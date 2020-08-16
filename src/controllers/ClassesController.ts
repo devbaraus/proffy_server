@@ -156,6 +156,8 @@ export default class ClassesController {
     const trx = await db.transaction()
 
     try {
+      if(Number(cost) < 0) response.sendStatus(422)
+
       const insertedClassID = await trx('classes')
         .insert({
           subject_id,

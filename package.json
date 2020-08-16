@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "main": "src/server.ts",
   "license": "MIT",
-  "devDependencies": {
-
-  },
+  "devDependencies": {},
   "scripts": {
     "start": "ts-node src/server.ts",
     "start:dev": "ts-node-dev --transpile-only --ignore-watch node_modules --respawn src/server.ts",
@@ -14,8 +12,6 @@
     "knex:migrate:rollback": "knex --knexfile knexfile.ts migrate:rollback"
   },
   "dependencies": {
-    "@types/nodemailer": "^6.4.0",
-    "ts-node-dev": "^1.0.0-pre.56",
     "@types/bcrypt": "^3.0.0",
     "@types/cors": "^2.8.7",
     "@types/express": "^4.17.7",
@@ -23,7 +19,7 @@
     "@types/morgan": "^1.9.1",
     "@types/multer": "^1.4.3",
     "@types/node": "^14.0.27",
-    "typescript": "^3.9.7",
+    "@types/nodemailer": "^6.4.0",
     "bcrypt": "^5.0.0",
     "cloudinary": "^1.22.0",
     "cors": "^2.8.5",
@@ -35,6 +31,8 @@
     "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^6.4.11",
     "pg": "^8.3.0",
-    "ts-node": "^8.10.2"
+    "ts-node": "^8.10.2",
+    "ts-node-dev": "^1.0.0-pre.56",
+    "typescript": "^3.9.7"
   }
 }

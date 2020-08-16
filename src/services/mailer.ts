@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer'
+
 // @ts-ignore
 import hbs from 'nodemailer-express-handlebars'
 import path from 'path'
