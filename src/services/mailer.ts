@@ -154,14 +154,14 @@ export function templateResetPassword(token: string) {
                       >
                         ${
                           process.env.NODE_ENV === 'production'
-                            ? 'https://proffys.tk'
+                            ? 'https://proffy.baraus.dev'
                             : 'http://localhost:3000'
                         }/reset-password?token=${token}
                       </p>
                       <a
                         href="${
                           process.env.NODE_ENV === 'production'
-                            ? 'https://proffys.tk'
+                            ? 'https://proffy.baraus.dev'
                             : 'http://localhost:3000'
                         }/reset-password?token=${token}"
                         style="
