@@ -11,14 +11,13 @@ import {
   UserInterface,
   updateUser,
 } from '../models/UsersModel'
-import {
-  emailValidator,
-  passwordValidator,
-  phoneValidator,
-} from '../utils/validators'
+import { emailValidator, passwordValidator } from '../utils/validators'
 import ProffyError from '../prototypes/ProffyError'
 import db from '../database/connection'
-import mailer, { templateResetPassword } from '../services/mailer'
+import mailer, {
+  templateResetPassword,
+  templateValidateAccount,
+} from '../services/mailer'
 import { getSchedulesfromClasses } from './ClassesController'
 
 function generateToken(params: any) {
@@ -32,6 +31,26 @@ function decodeToken(params: string): { email: string; password: string } {
 }
 
 export default class UsersController {
+  async validate(request: Request, response: Response) {
+    const { token } = request.body
+    try {
+      const storedUser = (
+        await db('users').select('*').where('validateToken', token)
+      )[0]
+
+      if (!storedUser) return response.sendStatus(404)
+
+      if (!storedUser.validated)
+        await db('users')
+          .update({ validated: true, validateToken: null })
+          .where('validateToken', token)
+
+      response.json()
+    } catch (error) {
+      console.log(error)
+      response.sendStatus(400)
+    }
+  }
   async authenticate(request: Request, response: Response) {
     let { email, password, refresh_token } = request.body
     try {
@@ -56,6 +75,10 @@ export default class UsersController {
 
         if (!(await comparePassword(password, storedUser.password as string))) {
           return response.status(403).json({ error: 'Senha inválida.' })
+        }
+
+        if (!storedUser.validated) {
+          return response.status(401).json({ error: 'Valide sua conta.' })
         }
       }
 
@@ -141,7 +164,7 @@ export default class UsersController {
       const avatar = `https://api.adorable.io/avatars/285/${name
         .toString()
         .toLowerCase()}@proffy.png`
-
+      const token = crypto.randomBytes(20).toString('hex')
       const hashedPassword = await encryptPassword(password)
       const storedUser = await createUser({
         name,
@@ -149,21 +172,42 @@ export default class UsersController {
         avatar,
         email,
         password: hashedPassword,
+        validated: false,
+        validateToken: token
       })
 
       const { id } = storedUser[0]
 
-      return response.json({
-        token: generateToken({ id }),
-        refresh_token: generateToken({ email, password: hashedPassword }),
-        user: {
-          id,
-          email,
-          name,
-          surname,
-          avatar,
-        },
-      })
+      mailer
+        .sendMail({
+          to: email,
+          from: '"PROFFY" <contato@baraus.dev>',
+          subject: 'Valide sua conta Proffy',
+          // @ts-ignore
+          html: templateValidateAccount(token),
+          // template: 'reset-password', // html body
+          // context: { token }, // html body
+        })
+        .then(() =>
+          // response.json({
+          //   token: generateToken({ id }),
+          //   refresh_token: generateToken({ email, password: hashedPassword }),
+          //   user: {
+          //     id,
+          //     email,
+          //     name,
+          //     surname,
+          //     avatar,
+          //   },
+          // }),
+          response.json()
+        )
+        .catch((e:any) => {
+          console.log(e)
+          response.status(400).json({
+            error: 'Não foi possível criar sua conta, tente novamente!',
+          })
+        })
     } catch (e) {
       console.log(e)
       return response.status(400).json({
@@ -235,14 +279,13 @@ export default class UsersController {
           // template: 'reset-password', // html body
           // context: { token }, // html body
         })
-        .then(() =>  response.json())
-        .catch((e) => {
+        .then(() => response.json())
+        .catch((e: any) => {
           console.log(e)
           response.status(400).json({
             error: 'Erro não pedir redefinição de senha, tente novamente!',
           })
         })
-      
     } catch (e) {
       console.log(e)
       response.status(400).json({

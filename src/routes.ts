@@ -22,6 +22,8 @@ routes.post('/authenticate', usersController.authenticate)
 
 routes.post('/register', usersController.create)
 
+routes.post('/validate-account', usersController.validate)
+
 routes.post('/forgot-password', usersController.forgotPassword)
 
 routes.post('/reset-password', usersController.resetPassword)

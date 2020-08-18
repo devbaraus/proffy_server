@@ -4,6 +4,8 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
 export interface UserInterface {
+  validated?: boolean
+  validateToken?: string
   id?: number
   name?: string
   surname?: string
