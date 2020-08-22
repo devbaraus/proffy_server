@@ -1,14 +1,14 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/devbaraus/proffy_web/master/src/assets/images/purple-logo.svg" alt="Purple Proffy Logo" width="386px" />
+  <img src="https://raw.githubusercontent.com/devbaraus/proffy_server/master/purple-logo.svg" alt="Purple Proffy Logo" width="386px" />
 </p>
 
 <p align="center">	
    
-  <img alt="Repository size" src="https://img.shields.io/github/repo-size/devbaraus/proffy_web?color=#8257E5">
+  <img alt="Repository size" src="https://img.shields.io/github/repo-size/devbaraus/proffy_server?color=#8257E5">
 
-  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/devbaraus/proffy_web?color=#8257E5">
+  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/devbaraus/proffy_server?color=#8257E5">
 
-  <img alt="Stargazers" src="https://img.shields.io/github/stars/devbaraus/proffy_web?logo=github">
+  <img alt="Stargazers" src="https://img.shields.io/github/stars/devbaraus/proffy_server?logo=github">
 
   <img src="https://api.netlify.com/api/v1/badges/30d7053b-7ee0-4950-b391-ae6799efea2d/deploy-status" title="Proffy Netlify Status">
   
@@ -36,9 +36,13 @@ The idea behind Proffy is to connect people that want to study to people that wa
 # Technologies
 
 - TypeScript
-- JavaScritpt
-- ReactJS
-- [Web API](https://github.com/devbaraus/proffy_server) (Another repo)
+- NodeJS
+- Knex
+- Heroku
+- PostgreSQL
+- Mailer
+- Cloudinary
+- JWT
 
 # Features
 
