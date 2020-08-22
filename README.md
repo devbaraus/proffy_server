@@ -43,6 +43,7 @@ The idea behind Proffy is to connect people that want to study to people that wa
 - Mailer
 - Cloudinary
 - JWT
+- [Front End](https://github.com/devbaraus/proffy_web) (Another repo)
 
 # Features
 
