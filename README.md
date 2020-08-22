@@ -20,14 +20,14 @@
 
 ## Table of contents
 
-- [What is it?](#what-is-it)
+- [What is it](#what-is-it)
 - [Technologies](#technologies)
 - [Features](#features)
-- [How to run?](#how-to-run)
+- [How to run](#how-to-run)
 - [Ambient Variables](#ambient-variables)
-  - [What are ambient variables?](#what-are-ambient-variables)
+  - [What are ambient variables](#what-are-ambient-variables)
 
-# What is it?
+# What is it
 
 That's project was idealized by [Rocketseat](https://www.rocketseat.com.br) to a marathon called `Next Level Week #2` where they teach, another devs and people that are getting into programming, how to use a stack of development (React JS, React Native and NodeJS).
 
@@ -49,7 +49,7 @@ The idea behind Proffy is to connect people that want to study to people that wa
 - Avatar upload
 - CRUD classes
 
-# How to run?
+# How to run
 
 > If you want you can just live test on: [proffy.baraus.dev](https://proffy.baraus.dev)
 
@@ -63,7 +63,7 @@ The idea behind Proffy is to connect people that want to study to people that wa
 
 # Ambient Variables
 
-## What are ambient variables?
+## What are ambient variables
 
 Ambient variables are variables that are stored in your machine and can be read by applications, it is useful to store secret data, like and API token, and don't want to share your data with other.
 
