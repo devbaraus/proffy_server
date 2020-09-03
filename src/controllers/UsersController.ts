@@ -19,6 +19,7 @@ import mailer, {
   templateValidateAccount,
 } from '../services/mailer'
 import { getSchedulesfromClasses } from './ClassesController'
+const { MAILER_USER } = process.env
 
 function generateToken(params: any) {
   return jwt.sign(params, String(process.env.SECRET), {
@@ -173,7 +174,7 @@ export default class UsersController {
         email,
         password: hashedPassword,
         validated: false,
-        validateToken: token
+        validateToken: token,
       })
 
       const { id } = storedUser[0]
@@ -181,7 +182,7 @@ export default class UsersController {
       mailer
         .sendMail({
           to: email,
-          from: '"PROFFY" <contato@baraus.dev>',
+          from: `"PROFFY" <${MAILER_USER}>`,
           subject: 'Valide sua conta Proffy',
           // @ts-ignore
           html: templateValidateAccount(token),
@@ -200,9 +201,9 @@ export default class UsersController {
           //     avatar,
           //   },
           // }),
-          response.json()
+          response.json(),
         )
-        .catch((e:any) => {
+        .catch((e: any) => {
           console.log(e)
           response.status(400).json({
             error: 'Não foi possível criar sua conta, tente novamente!',
@@ -272,7 +273,7 @@ export default class UsersController {
       mailer
         .sendMail({
           to: email,
-          from: '"PROFFY" <contato@baraus.dev>',
+          from: `'"PROFFY" <${MAILER_USER}>'`,
           subject: 'Redefinição de senha',
           // @ts-ignore
           html: templateResetPassword(token),
